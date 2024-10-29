@@ -1,3 +1,4 @@
 --class-path src
 --main FnFork
 --cpp bin/cpp
+-D HXCPP_GC_BIG_BLOCKS

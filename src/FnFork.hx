@@ -1,6 +1,5 @@
 package;
 
-import sys.FileStat;
 import settings.Settings;
 import haxe.io.Path;
 import sys.FileSystem;
@@ -43,10 +42,10 @@ class FnFork {
 
         //clonning code repo
         var gitClone = new Process('git clone ${settings.codeRepoURL} ./.caches/fnf');
-        while (gitClone.exitCode(false) == null) {
-            Sys.stdout().write(gitClone.stdout.readAll());
-            Sys.stderr().write(gitClone.stderr.readAll());
-        }
+        trace(gitClone.stdout.readAll().toString());
+        trace(gitClone.stderr.readAll().toString());
+        while (gitClone.exitCode(false) == null) {}
+        gitClone.close();
 
         final cwd = Sys.getCwd();
         Sys.setCwd('./.caches/fnf');
@@ -67,8 +66,10 @@ class FnFork {
         });
         for (patch in patches) {
             var gitApply = new Process('git apply --reject "./patches/$patch"');
-            gitApply.stdout.readAll();
-            gitApply.stderr.readAll(); // Needed to apply patches, lol
+            while (gitApply.exitCode(false) == null) {
+                trace(gitApply.stdout.readAll());
+                trace(gitApply.stderr.readAll());
+            }
             gitApply.close();
         }
     }
@@ -84,7 +85,6 @@ class FnFork {
         var commitsStr = readCommitsFromFileString(fileContent);
         var commits:Array<Commit> = [];
         for (commit in commitsStr) {
-            //trace(commit);
             commits.push(new Commit(commit));
         }
 
@@ -118,7 +118,7 @@ class FnFork {
             if (line.startsWith("commit")) { // Reading new commit
                 if (commitStr != "")
                     ret.push(commitStr);
-                if (line.contains(File.getContent('./.caches/lastFnfCommitHash.txt')))
+                if (line.contains(File.getContent('./.caches/lastFnfCommitHash.txt'))) // No need to create patch files for base repo commits
                     break;
                 commitStr = "";
             }
@@ -137,13 +137,13 @@ class FnFork {
             FileSystem.createDirectory(dest);
 
         for (file in FileSystem.readDirectory(src)) {
-            var srcPath = '$src/$file';
-            var destPath = '$dest/$file';
+            final srcPath = '$src/$file';
+            final destPath = '$dest/$file';
 
             if (FileSystem.isDirectory(srcPath)) {
                 copyDirectory(srcPath, destPath);
             } else {
-                File.saveContent(destPath, File.getContent(srcPath));
+                File.saveBytes(destPath, File.getBytes(srcPath));
             }
         }
     }
