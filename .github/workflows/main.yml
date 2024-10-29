@@ -51,7 +51,7 @@ jobs:
 
       - name: Setup everything
         run: |
-          haxelib setup C:/haxelib
+          mkdir ~/haxelib && haxelib setup ~/haxelib
           haxelib install hxcpp
 
       - name: Compile FnFork
