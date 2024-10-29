@@ -1,0 +1,3 @@
+--class-path src
+--main FnFork
+--cpp bin/cpp
