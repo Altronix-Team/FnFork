@@ -1,4 +1,4 @@
-# FnFork (FNF Fork)
+# FnFork (FNF Fork) WIP
 
 Friday Night Funkin' fork creation tool inspired by [PaperMC paperweight](https://github.com/PaperMC/paperweight).
 
