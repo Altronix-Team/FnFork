@@ -93,7 +93,7 @@ class FnFork {
         if (!FileSystem.exists(patchesDir))
             FileSystem.createDirectory(patchesDir);
         for (i in 0...commits.length) {
-            var path = new Path('$patchesDir${buildCommitNumber(i+1)}-${commits[i].commitName}.patch');
+            var path = new Path('$patchesDir/${buildCommitNumber(i+1)}-${commits[i].commitName}.patch');
             trace(path.toString());
             var gitPatch = new Process('git format-patch -1 ${commits[i].hash} --stdout > "${path.toString()}"');
             gitPatch.close();
@@ -118,9 +118,9 @@ class FnFork {
             if (line.startsWith("commit")) { // Reading new commit
                 if (commitStr != "")
                     ret.push(commitStr);
-                if (line.contains(File.getContent('./.caches/lastFnfCommitHash.txt'))) // No need to create patch files for base repo commits
-                    break;
                 commitStr = "";
+                if (line.contains(File.getContent('.././.caches/lastFnfCommitHash.txt'))) // No need to create patch files for base repo commits
+                    break;
             }
             commitStr += line + '\n';
         }
